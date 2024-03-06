@@ -1,15 +1,28 @@
-function getCurrentTabId(callback) {
-    chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
-        if (callback) callback(tabs.length ? tabs[0].id : null);
-    });
+
+
+async function sendMessageToContentScript(message) {
+    try {
+        const tabs = await chrome.tabs.query({active: true, currentWindow: true});
+        if (tabs.length) {
+            return await chrome.tabs.sendMessage(tabs[0].id, message);
+        } else {
+            renderError('找不到有效的标签页');
+        }
+    } catch (e) {
+        renderError(`通讯失败:${e.message}`);
+    }
 }
 
-function sendMessageToContentScript(message, callback) {
-    getCurrentTabId((tabId) => {
-        chrome.tabs.sendMessage(tabId, message, function (response) {
-            if (callback) callback(response);
-        });
-    });
+/**
+ *
+ * @param errMsg {string}
+ */
+const renderError = (errMsg) => {
+    const containerEle = document.querySelector('#container');
+    containerEle.appendChild(createElement('div', {
+        textContent: errMsg,
+        style: 'color: red'
+    }));
 }
 
 const createElement = (tag, property) => {
@@ -84,18 +97,14 @@ const renderContainer = (response) => {
         }
     }
 }
-const displayContainer = () => {
+const displayContainer = async () => {
     const value = document.querySelector('#questionNum').value;
-    sendMessageToContentScript({
+    await sendMessageToContentScript({
         type: 'actions',
         data: value
     }, renderContainer);
 }
 
-sendMessageToContentScript({
-    type: 'actions',
-    data: 1
-}, renderContainer);
 /**
  *
  * @param file {File}
@@ -119,4 +128,8 @@ document.addEventListener('DOMContentLoaded', async function () {
         const file = event.target.files[0];
         await updateXlsx(file);
     });
+    await sendMessageToContentScript({
+        type: 'actions',
+        data: 1
+    }, renderContainer);
 });
