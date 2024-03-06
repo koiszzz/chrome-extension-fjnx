@@ -1,0 +1,16 @@
+{
+  "name": "chrome-extension-fjnx",
+  "version": "1.0.0",
+  "description": "for eln.fjnx.com.cn",
+  "scripts": {
+  },
+  "keywords": [
+    "chrome",
+    "extension"
+  ],
+  "author": "kois",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/chrome": "0.0.262"
+  }
+}

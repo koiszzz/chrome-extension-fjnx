@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="scripts/xlsx.full.min.js"></script>
+    <script src="popup.js"></script>
+</head>
+<body>
+<div class="actions">
+    <div style="display: flex">
+        <input id="questionNum" type="number" value="1" title="请输入要抽取的题目" placeholder="请输入题目标号">
+        <button id="questionBtn">获取</button>
+    </div>
+    <input id="file" type="file" accept="application/vnd.sealed.xls">
+</div>
+<div id="container" style="width: 300px"></div>
+</body>
+</html>
