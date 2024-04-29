@@ -1,5 +1,5 @@
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-    // console.log(request);
+    console.log(request, sender, sendResponse);
     if (request && request.type === 'actions') {
         const questions = Array.from(document.querySelectorAll('.question-item-wrap'));
         let num = +request.data - 1;
@@ -7,11 +7,14 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
         if (num > questions.length - 1) num = questions.length - 1;
         const curQuestion = questions.filter(r => !r.style.display)[0];
         const questionSection = curQuestion || questions[num];
+        console.log(questionSection);
         if (questionSection) {
             // let title = questionSection.querySelector('.name').textContent.replace(/[\r\n\s\t.]*/g, '').replace(/（\d{1,2}(.\d{1,2})?分）/, '');
             // const options = Array.from(questionSection.querySelectorAll('.item-detail')).map(r => r.textContent.replace(/[\r\n\s]*/g, ''));
-            let title = questionSection.querySelector('.question-stem').textContent.replace(/[\r\n\t.]*/g, '').replace(/（\d{1,2}(.\d{1,2})?分）/, '').trim().replace(/^\d{1,3}/, '');
+            let title = questionSection.querySelector('.question-stem').textContent.replace(/[\r\n\t.]*/g, '').replace(/（\d{1,2}(.\d{1,2})?分）/, '').trim().replace(/^\d{1,3}/, '').trim();
+            console.log(title);
             const options = Array.from(questionSection.querySelectorAll('.form-cell')).map(r => r.textContent.replace(/[\r\n\s]*/g, ''));
+            console.log(options);
             sendResponse({
                 type: 'data',
                 data: {

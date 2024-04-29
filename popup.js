@@ -73,7 +73,12 @@ const renderContainer = (response) => {
                             style: 'font-weight: bold'
                         }));
                         const answer = document.createElement('ul');
-                        const a = (search[0]['答案*'] || '').split(',');
+                        let a = (search[0]['答案*'] || '').split(',');
+                        if (a.length === 1) {
+                            a = search[0]['答案*'];
+                            a = [a[0], a[1], a[2], a[3], a[4]].filter(r => r);
+                        }
+                        console.log(a);
                         a.map(aa => {
                             const o = `选项${aa}`
                             const aw = aa + ':' + search[0][o]
@@ -94,15 +99,17 @@ const renderContainer = (response) => {
                 }
             });
             containerEle.appendChild(btn);
+            btn.click();
         }
     }
 }
 const displayContainer = async () => {
     const value = document.querySelector('#questionNum').value;
-    await sendMessageToContentScript({
+    const res = await sendMessageToContentScript({
         type: 'actions',
         data: value
-    }, renderContainer);
+    });
+    await renderContainer(renderContainer);
 }
 
 /**
@@ -114,6 +121,7 @@ const updateXlsx = async (file) => {
     const fileBuffer = await file.arrayBuffer();
     const workbook = window.XLSX.read(fileBuffer);
     const data = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]], {range: 2});
+    console.log(data);
     if (data.length > 0) {
         await chrome.storage.local.set({data});
     }
@@ -128,8 +136,9 @@ document.addEventListener('DOMContentLoaded', async function () {
         const file = event.target.files[0];
         await updateXlsx(file);
     });
-    await sendMessageToContentScript({
+    const res = await sendMessageToContentScript({
         type: 'actions',
         data: 1
-    }, renderContainer);
+    });
+    await renderContainer(res);
 });
